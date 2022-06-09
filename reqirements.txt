@@ -1,0 +1,8 @@
+Flask-SQLAlchemy
+Flask
+pymysql
+python-dotenv
+sqlalchemy
+sqlalchemy_utils
+marshmallow-sqlalchemy
+cryptography
