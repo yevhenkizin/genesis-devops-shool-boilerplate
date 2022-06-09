@@ -1,12 +1,11 @@
+import os
+
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 import dotenv
 from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database
 from marshmallow import Schema, fields
-
-import os
-from dataclasses import Field
 
 dotenv.load_dotenv()
 db_user = os.environ.get('DB_USERNAME')
@@ -38,7 +37,7 @@ class Student(db.Model):
         return cls.query.all()
     
     @classmethod
-    def get_by_id(cls,id):
+    def get_by_id(cls, id):
         return cls.query.get_or_404(id)
 
     def save(self):
@@ -48,8 +47,6 @@ class Student(db.Model):
     def delete(self):
         db.session.delete(self)
         db.session.commit()
-
-db.create_all()
 
 class StudentSchema(Schema):
     id = fields.Integer()
@@ -97,4 +94,8 @@ def add_student():
     return jsonify(data), 201
 
 if __name__ == '__main__':
+    engine = create_engine(DB_URI, echo=True)
+    if not database_exists(engine.url):
+        create_database(engine.url)
+    db.create_all()
     app.run(debug=True)
