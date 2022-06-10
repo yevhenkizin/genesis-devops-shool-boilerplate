@@ -8,6 +8,7 @@ from sqlalchemy_utils import database_exists, create_database
 from marshmallow import Schema, fields
 
 dotenv.load_dotenv()
+
 db_user = os.environ.get('DB_USERNAME')
 db_pass = os.environ.get('DB_PASSWORD')
 db_hostname = os.environ.get('DB_HOSTNAME')
