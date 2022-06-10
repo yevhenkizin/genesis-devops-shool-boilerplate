@@ -25,7 +25,7 @@ db = SQLAlchemy(app)
 class Student(db.Model):
     __tablename__ = "student"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120), unique=True, nullable=False)
+    name = db.Column(db.String(120), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     age = db.Column(db.Integer, nullable=False)
     cellphone = db.Column(db.String(13), unique=True, nullable=False)
@@ -63,21 +63,21 @@ def home():
 def api_main():
     return jsonify('Hello, World!'), 200
 
-@app.route('/api/getAllStudents', methods=['GET'])
+@app.route('/api/students', methods=['GET'])
 def get_all_students():
     students = Student.get_all()
     student_list = StudentSchema(many=True)
     response = student_list.dump(students)
     return jsonify(response), 200
 
-@app.route('/api/getStudent/<int:id>', methods = ['GET'])
+@app.route('/api/students/get/<int:id>', methods = ['GET'])
 def get_student(id):
     student_info = Student.get_by_id(id)
     serializer = StudentSchema()
     response = serializer.dump(student_info)
     return jsonify(response), 200
 
-@app.route('/api/addStudent', methods = ['POST'])
+@app.route('/api/students/add', methods = ['POST'])
 def add_student():
     json_data = request.get_json()
     new_student = Student(
