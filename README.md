@@ -2,14 +2,14 @@
 
 ### Prerequisites:
 - Python 3
+- python3-venv, python3-pip
 - MySQL with created user
-- venv, pip packages
 
 ### Build the project:
 ```
 python3 -m venv venv
 source vevn/bin/activate
-pip install to-requirements.txt
+pip install -r requirements.txt
 ```
 
 ### Run API:
