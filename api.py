@@ -64,6 +64,18 @@ def home():
 def api_main():
     return jsonify('Hello, World!'), 200
 
+@app.route('/api/health-check/ok', methods = ['GET'])
+def health_check_ok():
+    return jsonify('OK'), 200
+
+@app.route('/api/health-check/bad', methods = ['GET'])
+def health_check_bad():
+    return jsonify('Ooops'), 500
+
+@app.route('/api/k8s', methods = ['GET'])
+def k8s_deploy():
+    return jsonify('k8s route'), 200
+
 @app.route('/api/students', methods=['GET'])
 def get_all_students():
     students = Student.get_all()
@@ -97,4 +109,4 @@ if __name__ == '__main__':
     if not database_exists(engine.url):
         create_database(engine.url)
     db.create_all()
-    app.run(debug=True)
+    app.run(debug=True, port=5000)

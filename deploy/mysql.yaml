@@ -1,0 +1,71 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-secret
+  namespace: flask-app
+data:
+  mysql-password: MTIzNDU2
+  mysql-root-password: "bXlzcWxyb290"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-config
+  namespace: flask-app
+data:
+  mysql-db-name: db
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mysql
+  labels:
+    name: mysql
+  namespace: flask-app
+spec:
+  containers:
+    - name: mysql
+      image: mysql:8
+      resources:
+        requests:
+          cpu: 200m
+          memory: 512Mi
+        limits:
+          cpu: 200m
+          memory: 512Mi
+      env:
+        - name: "MYSQL_USER"
+          value: user
+        - name: "MYSQL_PASSWORD"
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: mysql-password
+        - name: "MYSQL_DATABASE"
+          valueFrom:
+            configMapKeyRef:
+              name: mysql-config
+              key: mysql-db-name
+        - name: "MYSQL_ROOT_PASSWORD"
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: mysql-root-password
+      ports:
+        - containerPort: 3306
+          name: mysql-container
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  namespace: flask-app
+spec:
+  selector:
+    name: mysql
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: mysql-container
+      name: mysql
