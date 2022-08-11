@@ -44,16 +44,13 @@ spec:
             - name: FLASK_ENV
               value: development
             - name: DB_USERNAME
-              value: user
+              value: root
             - name: DB_NAME
-              value: db
+              value: flask
             - name: DB_HOSTNAME
-              value: db
+              value: mysql.mysql.svc
             - name: DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: mysql-secret
-                  key: mysql-password
+              value: flask
           ports:
             - name: http
               containerPort: 80
