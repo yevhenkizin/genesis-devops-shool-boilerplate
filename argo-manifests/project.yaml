@@ -11,7 +11,7 @@ spec:
   sourceRepos:
   - '*'
   destinations:
-  - namespace: 'flask-app'
+  - namespace: 'flask'
     server: https://kubernetes.default.svc
   - namespace: 'mysql'
     server: https://kubernetes.default.svc
