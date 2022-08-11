@@ -1,0 +1,33 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: flask
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: "project"
+  sourceRepos:
+  - '*'
+  destinations:
+  - namespace: 'flask-app'
+    server: https://kubernetes.default.svc
+  - namespace: 'mysql'
+    server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  namespaceResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  namespaceResourceBlacklist:
+  - group: '*'
+    kind: ResourceQuota
+  - group: '*'
+    kind: LimitRange
+  - group: '*'
+    kind: NetworkPolicy
+  roles: []
+  orphanedResources:
+    warn: false

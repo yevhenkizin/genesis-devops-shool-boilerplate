@@ -41,13 +41,13 @@ spec:
           name: flask
       startupProbe:
         httpGet:
-          path: /api/health-check/ok
+          path: /
           port: flask
         failureThreshold: 5
         periodSeconds: 3
       readinessProbe:
         httpGet:
-          path: /api/health-check/ok
+          path: /
           port: flask
         failureThreshold: 5
         periodSeconds: 3

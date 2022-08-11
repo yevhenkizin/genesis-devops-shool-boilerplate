@@ -1,0 +1,88 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mysql
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: "flask"
+  source:
+    repoURL: https://github.com/bitnami/charts.git
+    targetRevision: master
+    path: bitnami/mysql
+    helm:
+      version: v3
+#      valueFiles:
+#      - values_dev/global.yaml
+#      - values_dev/rabbitmq.yaml
+#      - values_dev/redis.yaml
+      values: |
+        nameOverride: mysql
+        fullnameOverride: mysql
+        commonLabels:
+          app: mysql
+          environment: dev
+          project: flask
+        architecture: standalone
+        auth:
+          rootPassword: "flask"
+          database: "flask"
+        primary:
+          configuration: |-
+            [mysqld]
+            default_authentication_plugin=mysql_native_password
+            skip-name-resolve
+            explicit_defaults_for_timestamp
+            basedir=/opt/bitnami/mysql
+            plugin_dir=/opt/bitnami/mysql/plugin
+            port=3306
+            socket=/opt/bitnami/mysql/tmp/mysql.sock
+            datadir=/bitnami/mysql/data
+            tmpdir=/opt/bitnami/mysql/tmp
+            max_allowed_packet=2048M
+            wait_timeout=600
+            bind-address=0.0.0.0
+            pid-file=/opt/bitnami/mysql/tmp/mysqld.pid
+            log-error=/opt/bitnami/mysql/logs/mysqld.log
+            character-set-server=UTF8
+            collation-server=utf8_general_ci
+            performance_schema=ON
+            innodb_monitor_enable=all
+            performance-schema-instrument='%=on'
+            [client]
+            port=3306
+            socket=/opt/bitnami/mysql/tmp/mysql.sock
+            default-character-set=UTF8
+            plugin_dir=/opt/bitnami/mysql/plugin
+          livenessProbe:
+            enabled: true
+          readinessProbe:
+            enabled: false
+          persistence:
+            enabled: false
+          sidecars: []
+        secondary:
+          replicaCount: 0
+        serviceAccount:
+          create: true
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: mysql
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:     # Sync options which modifies sync behavior
+    - Validate=false # disables resource validation (equivalent to 'kubectl apply --validate=true')
+    - CreateNamespace=true # Namespace Auto-Creation ensures that namespace specified as the application destination exists in the destination cluster.
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+  revisionHistoryLimit: 10
