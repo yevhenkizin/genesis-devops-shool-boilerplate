@@ -37,7 +37,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["python"]
-          args: ["-m", "flask", "run"]
+          args: ["-m", "flask", "run", "--host=0.0.0.0"]
           env:
             - name: FLASK_APP
               value: api.py
