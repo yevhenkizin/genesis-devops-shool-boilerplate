@@ -6,6 +6,18 @@ metadata:
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
+  annotations:
+    #-- argocd-image-updater
+    #-- shared
+    argocd-image-updater.argoproj.io/image-list: flask=koteikin/flask-app
+    argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd/creds-484068090
+    argocd-image-updater.argoproj.io/git-branch: helm-1
+    ##--  flask
+    argocd-image-updater.argoproj.io/nginx.update-strategy: latest
+    argocd-image-updater.argoproj.io/nginx.helm.image-name: image.repository
+    argocd-image-updater.argoproj.io/nginx.helm.image-tag: image.tag
+    argocd-image-updater.argoproj.io/nginx.allow-tags: 'regexp:^[a-z0-9]+$'
+    argocd-image-updater.argoproj.io/nginx.ignore-tags: "latest"
 spec:
   project: "flask"
   source:
